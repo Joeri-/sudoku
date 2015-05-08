@@ -5,7 +5,7 @@ void print_matrix(int *matrix, int row, int col, int exclude);
 void check_row(int *matrix, int *poss, int index);
 
 int main(int argc, char *argv[]){
-	int i,j;
+	int i,j,k,l,m;
 	int index = 10;
 	
 	/* Creating and initializing the Sudoku S as an MxN matrix */
@@ -24,7 +24,7 @@ int main(int argc, char *argv[]){
 		P[i] = 1;
 	}
 	
-	print_matrix(&P[0],DIM*DIM,DIM,-1);
+//	print_matrix(&P[0],DIM*DIM,DIM,-1);
 	int Q[DIM*DIM];
 	
 	for (i=0; i<DIM*DIM; i++){
@@ -42,11 +42,25 @@ int main(int argc, char *argv[]){
 	S[10]=3;
 	S[11]=4;
 		
+
+	for (l=0; l<DIM*DIM; l++){
+		if(S[l]!= 0){
+			for(m=0; m<DIM; m++){
+				P[DIM*l+m]=-1;
+				printf("%d\n", DIM*l+m);
+			}
+		}
+	}
+
 	print_matrix(&S[0],DIM,DIM, index);
-	check_row(&S[0], &P[0], index);
+
+	for (k=0; k<DIM*DIM; k++){
+		check_row(&S[0], &P[0],k);
+	}
 	print_matrix(&P[0],DIM*DIM,DIM, -1);
 	return 0;
 }
+
 
 void print_matrix(int *matrix, int row, int col, int exclude){
 	int i,j;
@@ -79,8 +93,8 @@ void check_row(int *matrix, int *poss, int index){
 	int row, col;
 	int el_row, el_col, el_block;
 
-	col = index%DIM;
-	row = (index-col)/DIM;	
+	col = index%DIM;			//determine the column of the selected square
+	row = (index-col)/DIM;			//determine the row the selected square
 	
 //	printf("\nFor index: %d", index);
 //	printf("\nThe row number is: %d", row);
@@ -90,18 +104,20 @@ void check_row(int *matrix, int *poss, int index){
 	for(i=0; i<DIM; i++){
 		el_row = *(matrix + (row*DIM + i));
 		el_col = *(matrix + (i*DIM + col));
-		if (el_row == row && el_col == col);
+		
+		if (row*DIM + i == i*DIM + col){}
 		else{
+			
+				poss_row = poss+index*DIM+el_row-1;
+				poss_col = poss+index*DIM+el_col-1;
 			if (el_row != 0)
 				*(poss+index*DIM+el_row-1)=0;
+				//printf("row_el %d removed\n", el_row);
 			if (el_col != 0)
 				*(poss+index*DIM+el_col-1)=0;
+				//printf("col_el %d removed\n", el_col);
 		}
 //		printf("%d \n", el_col);
 //		el_block = 0;
 	}
-
-	for (i=0; i<DIM; i++)
-		printf("%d\n", *(poss+index+i));
-	
 }
